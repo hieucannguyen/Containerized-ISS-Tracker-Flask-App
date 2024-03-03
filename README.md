@@ -11,14 +11,13 @@ The [ISS Trajectory Data website](https://spotthestation.nasa.gov/trajectory_dat
 ## File Descriptions
 ~~~
 Containerized-ISS-Tracker-Flask-App
- ┣ app.py
- ┣ docker-compose.yml
- ┣ Dockerfile
- ┣ iss_tracker.py
- ┣ README.md
- ┣ requirements.txt
- ┣ software_diagram.svg
- ┗ test_iss_tracker.py
+    ├── Dockerfile
+    ├── docker-compose.yml
+    ├── app.py
+    ├── iss_tracker.py
+    ├── test_iss_tracker.py
+    ├── software_diagram.svg
+    └── README.md
 ~~~
 
 - [Dockerfile](Dockerfile) Dockerfile to generate docker image of our application
