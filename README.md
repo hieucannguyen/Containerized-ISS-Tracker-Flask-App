@@ -23,7 +23,7 @@ Containerized-ISS-Tracker-Flask-App
 - [Dockerfile](Dockerfile) Dockerfile to generate docker image of our application
 - [docker-compose.yml](docker-compose.yml) docker-compose file to run the containerized Flask application
 - [requirements.txt](requirements.txt) required dependencies for the project
-- [iss_tracker.py](iss_tracker.py) Script to process the ISS dataset
+- [iss_tracker.py](iss_tracker.py) Scripts to process the ISS dataset
 - [test_iss_tracker.py](test_iss_tracker.py) Unit tests for ISS data processing
 - [app.py](app.py) Flask application for API endpoints
 
