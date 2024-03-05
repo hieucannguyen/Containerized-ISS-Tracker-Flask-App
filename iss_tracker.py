@@ -5,6 +5,7 @@ import xmltodict
 import datetime
 import math
 from typing import List
+import math
 
 # add logging
 import argparse
@@ -26,8 +27,11 @@ def get_data() -> List[dict]:
         Returns:
             ISS Trajectory dataset
     """
-    response = requests.get(url='https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml')
-    iss_data = xmltodict.parse(response.content)
+    try:
+        response = requests.get(url='https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml')
+        iss_data = xmltodict.parse(response.content)
+    except:
+        return "ISS data is unavailable right now. Try again later."
     return iss_data
 
 def time_range(start: str, end: str):
@@ -51,6 +55,12 @@ def time_range(start: str, end: str):
 
     return start.strftime('%m/%d/%Y'), end.strftime('%m/%d/%Y'), range
 
+def to_datetime(epoch: dict):
+    return datetime.datetime(int(epoch['EPOCH'][0:4]), 1, 1) + datetime.timedelta(int(epoch['EPOCH'][5:8]) - 1, \
+                                        hours=int(epoch['EPOCH'][9:11]), \
+                                        minutes=int(epoch['EPOCH'][12:14]),\
+                                        seconds=float(epoch['EPOCH'][15:21]))
+
 def find_closest_epoch(data: List[dict]) -> dict:
     """
         Finds the closest epoch to the current date time
@@ -65,20 +75,14 @@ def find_closest_epoch(data: List[dict]) -> dict:
     # initialize current datetime
     now = datetime.datetime.now()
     # set first epoch as closest
-    closest_date = datetime.datetime(int(data[0]['EPOCH'][0:4]), 1, 1) + datetime.timedelta(int(data[0]['EPOCH'][5:8]) - 1, \
-                                    hours=int(data[0]['EPOCH'][9:11]), \
-                                    minutes=int(data[0]['EPOCH'][12:14]), \
-                                    seconds=float(data[0]['EPOCH'][15:21]))
+    closest_date = to_datetime(data[0])
     
     closest_time_difference = abs((now - closest_date).total_seconds()) # time difference in seconds
     closest_epoch = data[0]
 
     # loop through every epoch to find the closest one to current date time
     for epoch in data:
-        new_date = datetime.datetime(int(epoch['EPOCH'][0:4]), 1, 1) + datetime.timedelta(int(epoch['EPOCH'][5:8]) - 1, \
-                                        hours=int(epoch['EPOCH'][9:11]), \
-                                        minutes=int(epoch['EPOCH'][12:14]),\
-                                        seconds=float(epoch['EPOCH'][15:21]))
+        new_date = to_datetime(epoch)
         
         new_time_difference = abs((now - new_date).total_seconds())
         if new_time_difference < 0:
@@ -132,6 +136,21 @@ def compute_speed(x: float, y: float, z: float) -> float:
             instantaneous speed
     """
     return math.sqrt(x**2 + y**2 + z**2)
+
+def convert_to_lat_lon_alt(epoch: dict):
+    date = to_datetime(epoch)
+    x = float(epoch["X"]["#text"])
+    y = float(epoch["Y"]["#text"])
+    z = float(epoch["Z"]["#text"])
+    print(x, y, z, date.hour, date.minute)
+    lat = math.degrees(math.atan2(z, math.sqrt(x**2 + y**2)))
+    alt = math.sqrt(x**2 + y**2 + z**2) - 6371.0088 
+    lon = math.degrees(math.atan2(y, x)) - ((date.hour-12)+(date.minute/60))*(360/24) + 19
+    if lon > 180: 
+        lon = -180 + (lon - 180)
+    if lon < -180: 
+        lon = 180 + (lon + 180)
+    return lat, lon, alt
 
 def main():
     response = requests.get(url='https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml')
