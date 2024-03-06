@@ -124,9 +124,9 @@ def convert_to_lat_lon_alt(epoch: dict):
         lon = 180 + (lon + 180)
     return lat, lon, alt
 
-def get_geolocation(coodinates):
+def get_geolocation(coordinates: str):
     geolocator = Nominatim(user_agent="iss_tracker_app")
-    location = geolocator.reverse(coodinates, zoom=15, language='en')
+    location = geolocator.reverse(coordinates, zoom=15, language='en')
     if location is None:
         return "Over the ocean"
     return location
