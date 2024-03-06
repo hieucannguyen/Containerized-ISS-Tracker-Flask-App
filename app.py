@@ -1,5 +1,5 @@
 from flask import Flask, request
-from iss_tracker import get_data, find_closest_epoch, compute_speed, to_datetime, convert_to_lat_lon_alt
+from iss_tracker import get_data, find_closest_epoch, compute_speed, to_datetime, convert_to_lat_lon_alt, get_geolocation
 import datetime
 
 app = Flask(__name__)
@@ -147,14 +147,15 @@ def get_current_epoch():
         float(current_epoch["Z_DOT"]["#text"]),
     )
     latitude, longitude, altitude = convert_to_lat_lon_alt(current_epoch)
+    location = get_geolocation(latitude, longitude)
     return {
-        "epoch": current_epoch["EPOCH"],
-        "epoch_timestamp": str(to_datetime(current_epoch)),
-        "now_timestamp": str(datetime.datetime.now()),
+        "epoch_timestamp (GMT)": str(to_datetime(current_epoch)),
+        "now_timestamp (GMT)": str(datetime.datetime.utcnow()),
         "speed (km/s)": curr_speed,
         "latitude": latitude,
         "longitude": longitude,
-        "altitude": altitude
+        "altitude": altitude,
+        "geolocation": location
     }
 
 if __name__ == "__main__":

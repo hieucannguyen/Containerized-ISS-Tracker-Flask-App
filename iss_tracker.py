@@ -6,6 +6,7 @@ import datetime
 import math
 from typing import List
 import math
+from geopy.geocoders import Nominatim
 
 # add logging
 import argparse
@@ -73,10 +74,9 @@ def find_closest_epoch(data: List[dict]) -> dict:
     """
 
     # initialize current datetime
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow()
     # set first epoch as closest
     closest_date = to_datetime(data[0])
-    
     closest_time_difference = abs((now - closest_date).total_seconds()) # time difference in seconds
     closest_epoch = data[0]
 
@@ -95,33 +95,6 @@ def find_closest_epoch(data: List[dict]) -> dict:
             closest_epoch = epoch
 
     return closest_epoch
-    
-def average_speed(data: List[dict]) -> float:
-    """
-        Compute average speed of iss
-
-        Args:
-            data (List[dict]): iss data set
-
-        Returns:
-            average_speed (float): average speed of the iss
-    """
-
-    total_speed = 0
-    for epoch in data:
-        # speed formula
-        total_speed += math.sqrt((float(epoch['X_DOT']['#text']))**2 + \
-                                 (float(epoch['Y_DOT']['#text']))**2 + \
-                                 (float(epoch['Z_DOT']['#text']))**2)
-        
-    return total_speed/len(data)
-
-def current_speed(data):
-    closest_epoch = find_closest_epoch(data)
-    logging.debug(f'Closest epoch: {closest_epoch}')
-    return math.sqrt((float(closest_epoch['X_DOT']['#text']))**2 + \
-                     (float(closest_epoch['Y_DOT']['#text']))**2 + \
-                     (float(closest_epoch['Z_DOT']['#text']))**2)
 
 def compute_speed(x: float, y: float, z: float) -> float:
     """
@@ -142,7 +115,6 @@ def convert_to_lat_lon_alt(epoch: dict):
     x = float(epoch["X"]["#text"])
     y = float(epoch["Y"]["#text"])
     z = float(epoch["Z"]["#text"])
-    print(x, y, z, date.hour, date.minute)
     lat = math.degrees(math.atan2(z, math.sqrt(x**2 + y**2)))
     alt = math.sqrt(x**2 + y**2 + z**2) - 6371.0088 
     lon = math.degrees(math.atan2(y, x)) - ((date.hour-12)+(date.minute/60))*(360/24) + 19
@@ -152,32 +124,7 @@ def convert_to_lat_lon_alt(epoch: dict):
         lon = 180 + (lon + 180)
     return lat, lon, alt
 
-def main():
-    response = requests.get(url='https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml')
-
-    iss_data = xmltodict.parse(response.content)
-    iss_data = iss_data['ndm']['oem']['body']['segment']['data']['stateVector']
-
-    start_date, end_date, range = time_range(iss_data[0]['EPOCH'], iss_data[len(iss_data)-1]['EPOCH'])
-
-    print('ISS SUMMARY\n')
-    print('DATE RANGE:')
-    print(f'\t- {start_date} - {end_date}: {range} days\n')
-
-    print('CURRENT STATUS')
-    closest_epoch = find_closest_epoch(iss_data)
-    closest_time = datetime.datetime(int(closest_epoch['EPOCH'][0:4]), 1, 1) + datetime.timedelta(int(closest_epoch['EPOCH'][5:8]) - 1, \
-                                        hours=int(closest_epoch['EPOCH'][9:11]), \
-                                        minutes=int(closest_epoch['EPOCH'][12:14]),\
-                                        seconds=float(closest_epoch['EPOCH'][15:21]))
-    curr_position = closest_epoch['X']['#text'] + ', '  + closest_epoch['Y']['#text'] + ', ' + closest_epoch['Z']['#text']
-    curr_speed = closest_epoch['X_DOT']['#text'] + ', '  + closest_epoch['Y_DOT']['#text'] + ', ' + closest_epoch['Z_DOT']['#text']
-    print(f'\t- Date/Time: {closest_time}')
-    print(f'\t- Coordinates: ({curr_position}) km')
-    print(f'\t- Velocity vector: ({curr_speed}) km/s')
-    print(f'\t- Speed: {current_speed(iss_data)} km/s\n')
-
-    print(f'AVERAGE SPEED: {average_speed(iss_data)} km/s')
-
-if __name__ == '__main__':
-    main()
+def get_geolocation(latitdue, longitude):
+    geolocator = Nominatim(user_agent="iss_tracker_app")
+    location = geolocator.reverse((latitdue, longitude))
+    return location.raw
