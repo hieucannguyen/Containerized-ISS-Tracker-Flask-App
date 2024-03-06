@@ -147,7 +147,8 @@ def get_current_epoch():
         float(current_epoch["Z_DOT"]["#text"]),
     )
     latitude, longitude, altitude = convert_to_lat_lon_alt(current_epoch)
-    location = get_geolocation(latitude, longitude)
+    coodinates = f'{latitude}, {longitude}'
+    location = get_geolocation(coodinates)
     return {
         "epoch_timestamp (GMT)": str(to_datetime(current_epoch)),
         "now_timestamp (GMT)": str(datetime.datetime.utcnow()),

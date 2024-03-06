@@ -124,7 +124,7 @@ def convert_to_lat_lon_alt(epoch: dict):
         lon = 180 + (lon + 180)
     return lat, lon, alt
 
-def get_geolocation(latitdue, longitude):
+def get_geolocation(coodinates):
     geolocator = Nominatim(user_agent="iss_tracker_app")
-    location = geolocator.reverse((latitdue, longitude))
+    location = geolocator.reverse(coodinates, zoom=15)
     return location.raw
