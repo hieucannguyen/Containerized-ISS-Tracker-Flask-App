@@ -119,13 +119,15 @@ def get_specific_epoch_location(epoch):
         return "ISS data unavailable right now. Try again later"
     for item in data:
         if item["EPOCH"] == epoch:
+            latitude, longitude, altitude = convert_to_lat_lon_alt(item)
+            coordinates = f'{latitude}, {longitude}'
+            location = get_geolocation(coordinates)
             return {
                 "EPOCH": item["EPOCH"],
-                "Speed (km/s)": compute_speed(
-                    float(item["X_DOT"]["#text"]),
-                    float(item["Y_DOT"]["#text"]),
-                    float(item["Z_DOT"]["#text"]),
-                ),
+                "latitude": latitude,
+                "longitude": longitude,
+                "altitude": altitude,
+                "geolocation": location
             }
 
     return "Epoch not found."
@@ -147,8 +149,8 @@ def get_current_epoch():
         float(current_epoch["Z_DOT"]["#text"]),
     )
     latitude, longitude, altitude = convert_to_lat_lon_alt(current_epoch)
-    coodinates = f'{latitude}, {longitude}'
-    location = get_geolocation(coodinates)
+    coordinates = f'{latitude}, {longitude}'
+    location = get_geolocation(coordinates)
     return {
         "epoch_timestamp (GMT)": str(to_datetime(current_epoch)),
         "now_timestamp (GMT)": str(datetime.datetime.utcnow()),
