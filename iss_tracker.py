@@ -129,4 +129,4 @@ def get_geolocation(coordinates: str):
     location = geolocator.reverse(coordinates, zoom=15, language='en')
     if location is None:
         return "Over the ocean"
-    return location
+    return location.raw['display_name']
