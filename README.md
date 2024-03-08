@@ -211,7 +211,7 @@ Example output `$ curl localhost:5000/now`:
 }
 ~~~
 ## Run unit tests
-Ensure the Flask service is running [header](#run-flask-application-container)
+Ensure the Flask service is running [Run Flask Application Container](#run-flask-application-container)
 
 Use pytest to run all unit tests
 ~~~
