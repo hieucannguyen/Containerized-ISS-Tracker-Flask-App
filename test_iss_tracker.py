@@ -1,34 +1,13 @@
 import pytest
 import math
+import datetime
 from iss_tracker import (
-        time_range,
         find_closest_epoch,
-        average_speed,
-        compute_speed
+        compute_speed,
+        convert_to_lat_lon_alt,
+        to_datetime,
+        get_geolocation
 )
-
-def test_time_range():
-        # Test case where start and end are same
-        start = "2024-047T12:08:00.000Z"
-        end = "2024-047T12:08:00.000Z"
-        expected_start = "02/16/2024"
-        expected_end = "02/16/2024"
-        expected_range = 0
-        start_date, end_date, range_val = time_range(start, end)
-        assert start_date == expected_start
-        assert end_date == expected_end
-        assert range_val == expected_range
-
-        # Test case where start and end are different
-        start = "2024-047T12:08:00.000Z"
-        end = "2024-057T12:08:00.000Z"
-        expected_start = "02/16/2024"
-        expected_end = "02/26/2024"
-        expected_range = 10
-        start_date, end_date, range_val = time_range(start, end)
-        assert start_date == expected_start
-        assert end_date == expected_end
-        assert range_val == expected_range
 
 def test_find_closest_epoch():
         data = [
@@ -44,20 +23,6 @@ def test_find_closest_epoch():
         # AS OF 02/19/2024
         assert closest_epoch['EPOCH'] == '2024-047T12:08:00.000Z'
 
-def test_average_speed():
-        data = [
-            {'X_DOT': {'#text': '1'}, 'Y_DOT': {'#text': '1'}, 'Z_DOT': {'#text': '1'}},
-            {'X_DOT': {'#text': '2'}, 'Y_DOT': {'#text': '2'}, 'Z_DOT': {'#text': '2'}},
-            {'X_DOT': {'#text': '3'}, 'Y_DOT': {'#text': '3'}, 'Z_DOT': {'#text': '3'}}
-        ]
-        expected_average_speed = math.sqrt(1**2 + 1**2 + 1**2) + math.sqrt(2**2 + 2**2 + 2**2) + math.sqrt(3**2 + 3**2 + 3**2)
-        expected_average_speed /= len(data)
-        
-        # Calculate the average speed using the function
-        avg_speed = average_speed(data)
-
-        # Check if the average speed is calculated correctly
-        assert avg_speed == expected_average_speed
 
 def test_compute_speed():
 
@@ -68,3 +33,45 @@ def test_compute_speed():
 
         # Check if the speed is calculated correctly
         assert expected_speed == speed
+
+def test_convert_to_lat_lon_alt():
+    # Example epoch data
+    epoch = {
+        "EPOCH": "2024-075T23:01:00.000Z",
+        "X": {"#text": "1000"},
+        "Y": {"#text": "1000"},
+        "Z": {"#text": "1000"}
+    }
+
+    # Expected output
+    expected_lat = 35.264389682754654
+    expected_lon = -101.25
+    expected_alt = math.sqrt(3*(1000**2)) - 6371.0088
+
+    # Call the function
+    lat, lon, alt = convert_to_lat_lon_alt(epoch)
+    assert expected_lat == lat
+    assert expected_lon ==  lon
+    assert expected_alt == alt
+
+def test_to_datetime():
+    # Example epoch data
+    epoch = {
+        "EPOCH": "2024-075T23:01:00.000Z"
+    }
+
+    # Expected output
+    expected_datetime = datetime.datetime(2024, 3, 15, 23, 1, 0)
+
+    # Call the function
+    result_datetime = to_datetime(epoch)
+
+    assert result_datetime == expected_datetime
+
+def test_get_geolocation():
+    # Example coordinates
+    coordinates = "40.73061, -73.935242"
+
+    result_location = get_geolocation(coordinates)
+    print(result_location)
+    assert result_location == "New York, USA"
