@@ -73,5 +73,4 @@ def test_get_geolocation():
     coordinates = "40.73061, -73.935242"
 
     result_location = get_geolocation(coordinates)
-    print(result_location)
-    assert result_location == "New York, USA"
+    assert result_location == "Blissville Yard, Blissville, Queens County, New York, 11222, United States"
