@@ -155,7 +155,7 @@ Example output using `$ curl localhost:5000/epochs?limit=2&offset=1`:
   {
     "EPOCH": "2024-052T12:08:00.000Z",
     ...
-  },
+  }
 ]
 ~~~
 ### `/epochs/<epoch>`
