@@ -28,7 +28,7 @@ Containerized-ISS-Tracker-Flask-App/
 ## Software Diagram
 ![image](software_diagram.svg)
 
-*Software diagram of the Flask Application. Visualization of the application workflow using Docker and how to API endpoints interact between the code and web server.*
+*Software diagram of the Flask Application. Visualization of the containerized application using Docker and how to API endpoints interact between the code and web server.*
 
 ## Running the application using Docker
 ### Build the image
