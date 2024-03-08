@@ -56,7 +56,7 @@ $ docker-compose down
 
 ### `/comment`
 - METHOD: GET
-- Return the ‘comment’ list object from ISS data.
+- Return the ‘comment’ list object from ISS data which gives you a general summary of the ISS Trajectory data.
 
 Example output using `$ curl localhost:5000/comment`:
 ~~~
@@ -98,7 +98,7 @@ Example output using `$ curl localhost:5000/comment`:
 ~~~
 ### `/header`
 - METHOD: GET
-- Return the ‘header’ list object from ISS data.
+- Return the ‘header’ list object from ISS data which gives you when the data was created and the organization that created it.
 
 Example output using `$ curl localhost:5000/header`:
 ~~~
@@ -109,7 +109,7 @@ Example output using `$ curl localhost:5000/header`:
 ~~~
 ### `/metadata`
 - METHOD: GET
-- Return the ‘metadata’ dict object from ISS data.
+- Return the ‘metadata’ dict object from ISS data including its identification, position reference frame, temporal coverage, and the time system used for timestamping, with start and stop times in UTC format.
 
 Example output using `$ curl localhost:5000/metadata`:
 ~~~
