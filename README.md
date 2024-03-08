@@ -1,4 +1,4 @@
-# Containerized-ISS-Tracker-Flask-App
+# ISS-Tracker-Web-Application
 This project uses real-time ISS trajectory data to build a containerized Flask app for users to interact with. Overall, the project aims to process the ISS trajectory data and allow users to easily retrieve the processed data using the API endpoints.
 
 Must have [Docker](https://docs.docker.com/get-docker/) installed on your system.
@@ -20,7 +20,7 @@ Containerized-ISS-Tracker-Flask-App/
 
 - [Dockerfile](Dockerfile) Dockerfile to generate a docker image of our application
 - [docker-compose.yml](docker-compose.yml) docker-compose file to run the containerized Flask application
-- [requirements.txt](requirements.txt) required dependencies for the project
+- [requirements.txt](requirements.txt) Required dependencies for the project
 - [iss_tracker.py](iss_tracker.py) Scripts to process the ISS dataset
 - [test_iss_tracker.py](test_iss_tracker.py) Unit tests for ISS data processing
 - [app.py](app.py) Flask application for API endpoints
