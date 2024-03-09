@@ -1,4 +1,4 @@
-# ISS-Tracker-Web-Application
+# ISS-Tracker-Web-API
 This project uses real-time ISS trajectory data to build a containerized Flask app for users to interact with. Overall, the project aims to process the ISS trajectory data and allow users to easily retrieve the processed data using the API endpoints.
 
 Must have [Docker](https://docs.docker.com/get-docker/) installed on your system.
