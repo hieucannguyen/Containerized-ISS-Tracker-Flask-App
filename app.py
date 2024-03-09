@@ -6,6 +6,9 @@ app = Flask(__name__)
 
 @app.route("/comment", methods=["GET"])
 def get_comment():
+    """
+        Route to return the ‘comment’ list object from ISS data
+    """
     try:
         data = get_data()['ndm']['oem']['body']['segment']['data']['COMMENT']
     except KeyError:
@@ -14,6 +17,9 @@ def get_comment():
 
 @app.route("/header", methods=["GET"])
 def get_header():
+    """
+        Route to return the ‘header’ dict object from ISS data
+    """
     try:
         data = get_data()['ndm']['oem']['header']
     except KeyError:
@@ -22,6 +28,9 @@ def get_header():
 
 @app.route("/metadata", methods=["GET"])
 def get_metadata():
+    """
+        Route to return the ‘metadata’ dict object from ISS data
+    """
     try:
         data = get_data()['ndm']['oem']['body']['segment']['metadata']
     except KeyError:
@@ -31,7 +40,7 @@ def get_metadata():
 @app.route("/epochs", methods=["GET"])
 def get_epochs():
     """
-        Route to return entire ISS dataset
+        Route to return the entire ISS dataset
 
         Query parameters:
             limit (int): limit amount of epochs
@@ -108,7 +117,7 @@ def get_specific_epoch_speed(epoch):
 @app.route("/epochs/<epoch>/location", methods=["GET"])
 def get_specific_epoch_location(epoch):
     """
-        Route to return a specific epoch's speed in the ISS dataset
+        Route to return a specific epoch's geolocation in the ISS dataset
 
         Args:
             epoch (string): specific timestamp of the epoch
@@ -135,7 +144,7 @@ def get_specific_epoch_location(epoch):
 @app.route("/now", methods=["GET"])
 def get_current_epoch():
     """
-        Route to return the closest epoch to the current time along with its speed in the ISS dataset
+        Route to return the closest epoch to the current time along with its speed and geolocation in the ISS dataset
 
     """
     try:
